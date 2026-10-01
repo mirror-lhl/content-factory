@@ -47,6 +47,7 @@ from __future__ import annotations
 import json
 import math
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -86,8 +87,26 @@ class VideoError(RuntimeError):
 
 # ─────────────────────────── 工具函数 ───────────────────────────
 
+
+def _ffbin(name: str) -> str:
+    """定位 ffmpeg / ffprobe —— **项目自带 bin/ 优先**，其次系统 PATH。
+
+    自带优先是为了「一键安装」：用户不该为了做个视频去装 Homebrew。
+    下载的静态二进制放在 bin/，这里能直接找到。
+    """
+    here = os.path.dirname(os.path.abspath(__file__))
+    local = os.path.join(here, "bin", name)
+    if os.path.exists(local) and os.access(local, os.X_OK):
+        return local
+    return shutil.which(name) or name
+
+
 def _run(cmd: Sequence[str], *, desc: str = "", quiet: bool = True) -> subprocess.CompletedProcess:
-    r = subprocess.run(list(cmd), capture_output=True, text=True)
+    # 统一在这里解析路径 —— 10 个调用点全走这里，不必逐个改
+    cmd = list(cmd)
+    if cmd and cmd[0] in ("ffmpeg", "ffprobe"):
+        cmd[0] = _ffbin(cmd[0])
+    r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode != 0:
         tail = (r.stderr or "").strip().splitlines()[-6:]
         raise VideoError(f"{desc or cmd[0]} 失败 (rc={r.returncode}):\n  " + "\n  ".join(tail))
@@ -119,13 +138,34 @@ def font(role: str = "serif", size: int = 40) -> ImageFont.FreeTypeFont:
 
 
 def probe_duration(path: str) -> float:
-    """取媒体时长（秒）。"""
-    r = _run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
-              "-of", "csv=p=0", path], desc="ffprobe")
+    """取媒体时长（秒）。
+
+    优先用 ffprobe；**没有 ffprobe 时回落到 ffmpeg**。
+    这样「一键安装」只需下载 20MB 的 ffmpeg，不必再下一份 ffprobe ——
+    时长信息本来就在 `ffmpeg -i` 的输出里。
+    """
+    if shutil.which("ffprobe") or os.path.exists(
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "bin", "ffprobe")):
+        try:
+            r = _run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                      "-of", "csv=p=0", path], desc="ffprobe")
+            return float((r.stdout or "0").strip())
+        except Exception:
+            pass          # ffprobe 有但读不出来 → 继续用 ffmpeg 兜底
+
+    # 回落：从 ffmpeg -i 的 stderr 里读 "Duration: 00:00:12.34"
+    bin_ff = _ffbin("ffmpeg")
     try:
-        return float((r.stdout or "0").strip())
-    except ValueError:
+        r = subprocess.run([bin_ff, "-hide_banner", "-i", path],
+                           capture_output=True, text=True)
+    except Exception:
         return 0.0
+    m = re.search(r"Duration:\s*(\d+):(\d{2}):(\d{2}(?:\.\d+)?)",
+                  (r.stderr or "") + (r.stdout or ""))
+    if not m:
+        return 0.0
+    h, mi, sec = int(m.group(1)), int(m.group(2)), float(m.group(3))
+    return h * 3600 + mi * 60 + sec
 
 
 def tts(text: str, out_wav: str, *, voice: str = "Tingting",

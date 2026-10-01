@@ -76,7 +76,27 @@ AI 老子讲《道德经》 | 12 作品涨粉 15 万，单条点赞 10 万+ | �
 
 ## 快速开始
 
-### 先看要装什么（实测过的依赖表）
+### macOS：双击安装，不用碰命令行
+
+```
+双击  一键安装.command
+```
+
+它会自动做完这些（**实测 25 秒**）：
+
+```
+① 检查 Python          （macOS 不自带，缺了会告诉你怎么装）
+② 建独立环境 .venv      （不污染你的系统 Python）
+③ 装 Pillow + numpy
+④ 下载自带 ffmpeg       ← 不需要 Homebrew，直接下静态二进制
+⑤ 检查中文字体
+⑥ 首次运行自动造示例素材
+⑦ 启动 → http://127.0.0.1:8765
+```
+
+装完再启动用 `启动运营助手.command`（它带依赖预检）。
+
+### 其他平台 / 想手动装
 
 | 功能 | 需要 | 缺了会怎样 |
 |---|---|---|
@@ -86,27 +106,18 @@ AI 老子讲《道德经》 | 12 作品涨粉 15 万，单条点赞 10 万+ | �
 | 富文本剪贴板 | pyobjc-framework-Cocoa（可选） | 只少「复制富文本到剪贴板」 |
 | RPA / 数据回流 | pyobjc 三家（可选，macOS 专有） | 核心功能完全不受影响 |
 
-**Python 3.9 及以上**（实测 3.9 语法全部通过；开发环境是 3.14）。
-
-### 安装
+**Python 3.9 及以上**（实测 3.9.6 即可，开发环境是 3.14）。
 
 ```bash
 pip install Pillow numpy
-brew install ffmpeg          # 或从 ffmpeg.org 下载静态包
+# ffmpeg：macOS 用 brew，或把静态二进制放进 bin/
+python3 make_sample.py
+python3 asset_library.py import-collection --root assets
+python3 app_server.py
 ```
 
-### 跑起来
-
-```bash
-python3 make_sample.py                              # 造示例素材（真实古籍太大，不能进仓库）
-python3 asset_library.py import-collection --root assets   # 建索引
-python3 app_server.py                               # → http://127.0.0.1:8765
-```
-
-也可以双击 `启动运营助手.command` —— **它会先做依赖预检**，
-缺什么直接告诉你装什么，不会跑到一半才报错。
-
-打开浏览器，左侧导航：总览 / 选题 / 创作 / 素材库 / 数据 / **流程**。
+> `bin/ffmpeg` 会被优先使用 —— 项目自带的话就不需要系统装 ffmpeg。
+> 没有 ffprobe 也没关系，时长探测会自动回落到 `ffmpeg -i`。
 
 ### 命令行也能全流程走完
 

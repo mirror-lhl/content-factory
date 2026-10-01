@@ -6,6 +6,12 @@ browser_profiles/
 rpa_shots/
 rpa_libs/
 
+# ── 一键安装产生的本地环境（不入库）──
+.venv/
+bin/
+fonts/
+.pipcache/
+
 # ── 选题候选（含个人判断，按需决定是否公开）──
 选题候选*.json
 选题候选*.md
