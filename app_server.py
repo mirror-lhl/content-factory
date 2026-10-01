@@ -506,17 +506,7 @@ def produce_async(pid: str, opts: dict) -> str:
                 video_template=opts.get("video_template", "") or "",
             )
             res = pl.produce(proj, ws(), o)
-            # 生产成功 → 自动推进 SOP 的「出成品」这一步，直接落到第⑥步质检。
-            # 让用户手动点"我已生产完成"是多余的：机器明明知道成没成。
-            try:
-                import sop as _sop
-                if res.ok and _sop.next_key(proj) == "produce":
-                    ok, issues = _sop.submit_step(proj, "produce", {})
-                    ws().save(proj)
-                    JOBS.log(jid, "  ✅ SOP 第⑤步自动通过 → 进入第⑥步出厂质检"
-                             if ok else f"  第⑤步未通过：{issues}")
-            except Exception as _e:
-                JOBS.log(jid, f"  (SOP 自动推进跳过: {_e})")
+            # SOP 第⑤步的推进已下沉到 pipeline.produce()，两条路径共用
             JOBS.done(jid, {"ok": res.ok,
                             "produced": {k: len(v) for k, v in res.produced.items()},
                             "skipped": res.skipped,

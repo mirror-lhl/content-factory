@@ -515,6 +515,19 @@ def produce(proj: co.ContentProject, ws: co.Workspace, opts: Options) -> Result:
         for k, v in res.errors:
             print(f"    {k}: {v[:110]}")
     print(f"{'=' * 58}\n")
+
+    # SOP 第⑤步「出成品」自动通关。
+    # 放在这里（内核）而不是 Web 服务层 —— 否则命令行生产完 SOP 不推进，
+    # 只有网页路径能推进，两条路径行为就不一致了。
+    try:
+        import sop as _sop
+        if res.ok and _sop.next_key(proj) == "produce":
+            _ok, _issues = _sop.submit_step(proj, "produce", {})
+            ws.save(proj)
+            print("  ✅ SOP 第⑤步自动通过 → 下一步：⑥ 出厂质检\n" if _ok
+                  else f"  第⑤步未通过：{_issues}")
+    except Exception as _e:
+        print(f"  (SOP 自动推进跳过: {_e})")
     return res
 
 
