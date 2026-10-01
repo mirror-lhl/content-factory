@@ -1,0 +1,19 @@
+# ── 核心（必需）──
+Pillow>=10.0          # 封面 / 视频字幕 / 素材缩略图
+numpy>=1.24           # 素材页「暗块占比」计算
+
+# ── 可选 ──
+# 复制富文本到剪贴板（秀米/壹伴同款分发方式）。不装则少这一个功能。
+# pyobjc-framework-Cocoa>=10.0
+
+# ── 可选：RPA 与数据回流（macOS 专有，比较脆，核心不依赖）──
+# pyobjc-framework-Quartz>=10.0
+# pyobjc-framework-ApplicationServices>=10.0
+# pyobjc-framework-Vision>=10.0      # 平台后台数据 OCR
+#
+# ── 系统依赖（非 pip）──
+# ffmpeg + ffprobe   封面拼图 / 视频渲染 / 像素比对
+#                     macOS: brew install ffmpeg
+#                     其他:  https://ffmpeg.org/download.html
+#                     注意：Homebrew 版**不带 libass**，所以字幕不用 drawtext
+# say                 macOS 自带，配音用（TTS）

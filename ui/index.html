@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>运营助手 · AI × 国学</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+<aside class="side">
+  <div class="brand">
+    <div class="logo">运</div>
+    <div>
+      <div class="bname">运营助手</div>
+      <div class="bsub">内容工厂 · 本地运行</div>
+    </div>
+  </div>
+
+  <nav id="nav">
+    <a data-page="overview" class="active"><i>◎</i>总览</a>
+    <a data-page="topics"><i>◈</i>选题</a>
+    <a data-page="projects"><i>▤</i>创作</a>
+    <a data-page="assets"><i>▣</i>素材库</a>
+    <a data-page="metrics"><i>◔</i>数据</a>
+    <a data-page="sop"><i>✓</i>流程</a>
+  </nav>
+
+  <div class="sidefoot">
+    <div class="pill" id="statProjects">— 个项目</div>
+    <div class="pill" id="statAssets">— 个素材</div>
+    <div class="note">发布按钮永远由你点</div>
+  </div>
+</aside>
+
+<main class="main">
+  <header class="top">
+    <h1 id="pageTitle">总览</h1>
+    <div class="topact" id="pageActions"></div>
+  </header>
+  <section id="view" class="view"><div class="loading">载入中…</div></section>
+</main>
+
+<div id="drawer" class="drawer hidden">
+  <div class="drawerBox">
+    <div class="drawerHead">
+      <span id="drawerTitle">详情</span>
+      <button class="x" onclick="closeDrawer()">✕</button>
+    </div>
+    <div id="drawerBody" class="drawerBody"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="/app.js"></script>
+</body>
+</html>

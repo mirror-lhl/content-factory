@@ -1,0 +1,52 @@
+# ── 素材与产出：体积大且在本地，绝不入库 ──
+assets/
+workspace/
+_备份_旧项目_*/
+browser_profiles/
+rpa_shots/
+rpa_libs/
+
+# ── 选题候选（含个人判断，按需决定是否公开）──
+选题候选*.json
+选题候选*.md
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.Python
+
+# ── 系统 / 编辑器 ──
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# ── 测试产物 / 研究草稿（不进公开仓库）──
+_备份_测试素材/
+covers/
+douyin_research/
+test_*.mp4
+*.log
+
+# ── 竞品/平台调研抓取内容（涉及他人文档，不入库）──
+zhihu-toutiao-automation-feasibility.md
+自媒体平台自动化发布-可行性报告.md
+
+# ── 平台调研抓取（第三方文档，不入库）──
+rsch/
+zhihu_research/
+bilibili_research/
+
+# ── 测试音视频 ──
+*.mp4
+*.wav
+*.aiff
+*.jpg
+*.png
+!ui/**/*.png
+
+# ── 个人选题库（个人判断，默认不公开）──
+选题库-*.md
