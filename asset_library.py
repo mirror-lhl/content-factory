@@ -589,6 +589,13 @@ class AssetLibrary:
                         continue
                     try:
                         w, h = _image_size(fp)
+                        if not w or not h:
+                            # 没装 Pillow 时 _image_size 会返回 (0,0)。
+                            # 静默写进去会让索引残缺、封面按错误尺寸排版，
+                            # 所以这里明确报出来，而不是装作成功。
+                            raise RuntimeError(
+                                "读不到图片尺寸（通常是没装 Pillow）"
+                                "，请先 pip install Pillow")
                         digest = sha256_of(fp)
                         # ⚠️ 主键**必须按路径**，不能只用内容哈希。
                         # 不同书里出现完全相同的页很常见（空白页、隔页、

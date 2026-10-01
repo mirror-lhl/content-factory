@@ -76,21 +76,35 @@ AI 老子讲《道德经》 | 12 作品涨粉 15 万，单条点赞 10 万+ | �
 
 ## 快速开始
 
+### 先看要装什么（实测过的依赖表）
+
+| 功能 | 需要 | 缺了会怎样 |
+|---|---|---|
+| 图文 / 封面 | **Pillow** | 完全用不了 |
+| 素材库 | Pillow + **numpy** | 缺 numpy：校准页识别失效，配图可能混进灰阶卡 |
+| **视频** | Pillow + **ffmpeg** | 视频做不了，**图文和封面不受影响** |
+| 富文本剪贴板 | pyobjc-framework-Cocoa（可选） | 只少「复制富文本到剪贴板」 |
+| RPA / 数据回流 | pyobjc 三家（可选，macOS 专有） | 核心功能完全不受影响 |
+
+**Python 3.9 及以上**（实测 3.9 语法全部通过；开发环境是 3.14）。
+
+### 安装
+
 ```bash
-# 1. 依赖
 pip install Pillow numpy
 brew install ffmpeg          # 或从 ffmpeg.org 下载静态包
-
-# 2. 造一份示例素材（真实古籍扫描太大，不能进仓库）
-python3 make_sample.py
-
-# 3. 建索引
-python3 asset_library.py import-collection --root assets
-
-# 4. 启动
-python3 app_server.py
-# → http://127.0.0.1:8765
 ```
+
+### 跑起来
+
+```bash
+python3 make_sample.py                              # 造示例素材（真实古籍太大，不能进仓库）
+python3 asset_library.py import-collection --root assets   # 建索引
+python3 app_server.py                               # → http://127.0.0.1:8765
+```
+
+也可以双击 `启动运营助手.command` —— **它会先做依赖预检**，
+缺什么直接告诉你装什么，不会跑到一半才报错。
 
 打开浏览器，左侧导航：总览 / 选题 / 创作 / 素材库 / 数据 / **流程**。
 
